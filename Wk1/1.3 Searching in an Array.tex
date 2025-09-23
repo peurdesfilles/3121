@@ -1,0 +1,61 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+
+\begin{document}
+\task[regular]{Searching in an Array}
+
+\begin{question}
+A two-dimensional array is \emph{sorted} if each of its rows and columns is strictly increasing. For example, the following two-dimensional array is sorted.
+\[\begin{bmatrix}
+    2 & 3 & 6 & 8 \\
+    4 & 5 & 7 & 10 \\
+    6 & 8 & 9 & 13 \\
+    9 & 11 & 12 & 15
+\end{bmatrix}\]
+
+Given a sorted two-dimensional array $A$ with $n$ rows and $n$ columns and an integer $k$, our task is to design an $O(n)$ algorithm that determines whether or not $k$ appears somewhere in $A$.
+
+\begin{enumerate}
+    \item Suppose we query the top right entry $A[1][n]$ of the array. In each of the following three cases, explain which parts of the array $A$ may contain $k$, and which parts of the array $A$ definitely cannot contain $k$.
+    \begin{itemize}
+        \item {\bfseries Case 1}: $A[1][n] > k$.
+        \item {\bfseries Case 2}: $A[1][n] < k$.
+        \item {\bfseries Case 3}: $A[1][n] = k$.
+    \end{itemize}
+
+    In each case, briefly justify your answer.
+
+    \item \label{algorithm_part} Design an $O(n)$ algorithm that determines whether or not $k$ appears in $A$.
+
+    {\bfseries Hint.} \emph{After making a query to $A[1][n]$, what are the dimensions of the search space? How could you use that information to construct the algorithm?}
+
+    \item \textbf{(Optional)} If we instead began by examining the entry in the middle row and middle column\footnote{or one of the middle rows and columns, if the dimensions are even.}, what shape does the remaining search space have? How does this make searching in a two-dimensional array more difficult than the proposed algorithm in part \ref{algorithm_part}?
+\end{enumerate}
+\end{question}
+
+\newpage
+
+\begin{rubric}
+
+\begin{itemize}
+
+ \item\textbf{Clarity:} For part (a), consider each case separately, and:
+    \begin{itemize}
+        \item Provide a brief but clear, and correct description of which part(s) of the original array $k$ can appear in. You don't have to give too strong a claim.
+        \item Provide one to two sentences of justification for your answer to the previous dot point.
+    \end{itemize}
+
+    \item {\bfseries (Optional) For part (c):} It is sufficient to describe the shape of the remaining search space using the proposed querying algorithm. Provide a brief but clear argument for why searching for $k$ is more difficult than with the algorithm from part \ref{algorithm_part}.
+
+\end{itemize}
+ \expected[3]{two to three sentences per case., half a page., two to three sentences.}
+\end{rubric}
+\newpage
+\begin{solution}
+% Write your solution here.
+\end{solution}
+\begin{attribution}
+% Write any attributions here.
+\end{attribution}
+
+\end{document}

@@ -1,0 +1,48 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+
+\begin{document}
+\task[regular]{Geese in a Trenchcoat II}
+
+\begin{question}
+Recall the example problem \emph{Geese in a Trenchcoat} from the first lecture.
+
+Consider the following alternative algorithm for the same problem, which uses a ``two pointers'' method.
+
+\begin{quote}
+    Sort the geese from left to right in ascending order of height, using merge sort. Put a red hat on the shortest goose and a blue hat on the tallest goose. Then:
+    \begin{itemize}
+        \item if the hatted geese have total height less than $H$, move the red hat one space to the right;
+        \item if the hatted geese have total height greater than $H$, move the blue hat one space to the left, and
+        \item if the hatted geese have total height equal to $H$, report this pair as a solution.
+    \end{itemize}
+    If a single goose ever has both hats, report that there is no solution.
+\end{quote}
+
+Justify why the algorithm is correct, and analyse its time complexity.
+
+\hint When we remove a hat (say the red hat) from a particular goose, what are we saying about that goose, and how do we know that conclusion to be true?
+\end{question}
+\begin{rubric}
+\begin{itemize}
+    \item Explain why, if there is a solution, then it is found by this algorithm.
+    \begin{itemize}
+        \item You'll need to justify that each move of the hats is valid, i.e. doesn't lose any solutions.
+    \end{itemize}
+    \item Explain why, if there is no solution, then the algorithm reports that there is no solution. This part should be easy!
+    \item To analyse the time complexity, consider the sorting as well as the part with the hats.
+    \begin{itemize}
+        \item How many times can each hat move?
+    \end{itemize}
+\end{itemize}
+ \expected[1]{half a page.}
+\end{rubric}
+\clearpage
+\begin{solution}
+% Write your solution here.
+\end{solution}
+\begin{attribution}
+% Write any attributions here.
+\end{attribution}
+
+\end{document}

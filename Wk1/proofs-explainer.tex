@@ -1,0 +1,120 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+
+\begin{document}
+\task{Justifying Algorithms}
+
+\begin{question}
+\section*{Planning Before you Start}
+To write a convincing justification, it's essential to have a solid idea of how your proof is going to go before you start writing it. Otherwise, you're probably going to end up writing a lot of words that don't actually prove what you're saying, or are not correct at all. We will encourage you to write an outline of your justification structure before you begin - not only does this get you to think about what you will write, it makes it easier for a reader to follow along as they already know what to expect.
+
+Let's look at an example - justifying an algorithm we're all familiar with, binary search. As a reminder, here is the algorithm:
+\begin{quote}
+    \textbf{Problem:} Given a \textit{sorted} array $A$ with length $n$ and a target value $t$, determine whether $t$ appears in $A$.
+
+    \textbf{Algorithm:} Start with $l = 1$ and $r = n$. Then, choose $m = \left\lfloor\frac{l+r}{2}\right\rfloor$, and check $A[m]$.
+    \begin{itemize}
+        \item If $A[m] = t$, the answer is yes, and we are done.
+        \item If $A[m] < t$, then we set $l = m + 1$.
+        \item Otherwise, $A[m] > t$, and we set $r = m - 1$.
+    \end{itemize}
+    Repeat until $t$ is found, or $l$ and $r$ overlap, in which case $t$ is not in the array.
+\end{quote}
+
+To justify this algorithm, let's start by thinking about what is required for the algorithm to be correct. There are two things:
+\begin{itemize}
+    \item If $t$ is in the array, our algorithm answers yes,
+    \item If $t$ is not in the array, our algorithm answers no.
+\end{itemize}
+The `no' case is straightforward, but the `yes' case requires a bit more planning before we can start writing it. The algorithm works by reducing the search space bit by bit, so for the algorithm to answer the yes case correctly, we would need to ensure that we are never removing $t$ from the search space. If we never remove it, then since we keep making the search space smaller, we must eventually find it.
+
+So, this is a good plan for our proof! We will show that if $t$ is in the array, then at each step, we ensure that $t$ is between $l$ and $r$. We will then show that if $t$ is not in the array, then the algorithm will always answer no.
+
+This plan gives us a structure that we can then fill out with the details (How do we ensure that $t$ is between $l$ and $r$? Why can't the algorithm return `yes' if $t$ isn't in the array?) to complete the proof.
+
+\textbf{Exercise:} Fill in the details to complete the proof of binary search.
+
+\section*{Some Common Patterns}
+There are some proof `patterns' that are useful for a lot of different proofs. These don't apply to every algorithm, and will often need some tweaking, extending or combining to fit your algorithm, but they are good starting points to consider. As you see different examples of algorithms and their justifications throughout the course, you will pick up more common patterns to add to your justification toolkit. 
+
+\subsection*{Equivalent Sets}
+We often solve some problem by transforming it into a different problem. Here's an example:
+\begin{quote}
+    \textbf{Problem:} You are given an integer value $x$. You would like to transform $x$ to 1 with the following rules:
+    \begin{itemize}
+        \item You can add 5 to $x$,
+        \item If $x$ is even, you can halve it,
+        \item $x$ can not exceed its original value.
+    \end{itemize} 
+    Determine if this is possible.
+    
+    \textbf{Algorithm:} Create a directed graph with $x$ vertices, $v_1 \dots v_x$. For each vertex $v_i$, if $i +5 \leq  x$, add an edge to $v_{i+5}$. Additionally, if $i$ is even, add an edge to $v_{i/2}$. Use a BFS to find a path from $v_x$ to $v_1$. If a path is found the answer is yes, otherwise, it is no.
+\end{quote}
+
+Here, we have transformed our problem about numbers to the problem of finding a path in a graph, which we already know how to solve.
+
+To show that our algorithm is correct, we need to show that if there is a solution, we will not miss it. In other words, \begin{quote}
+    If $x$ can be transformed to 1, there is a path from $v_x$ to $v_1$.
+\end{quote}
+However, this isn't quite enough. We also need to show that our algorithm won't answer `yes' when it isn't actually possible, or \begin{quote}
+    If there is a path from $v_x$ to $v_1$, then $x$ can be transformed to 1.
+\end{quote}
+Here, we are showing that the set of paths from $v_x$ to $v_1$ is equivalent to the set of transformation sequences from $x$ to $1$. Since they are equivalent, if we find a path in the graph, we know there is a corresponding sequence of operations we can perform.
+
+What if we were also interested in the minimum number of operations required to achieve the transformation? In this case, we also need to show that the length of a path in the graph is the same as the length of the corresponding sequence of operations. Then, since every sequence of transformations corresponds to a path in the graph with the same length, the shortest path must correspond to the shortest sequence of transformations.
+\subsection*{Invariants}
+Many justifications use the concept of an \textit{invariant}, which is a fact that remains true throughout the algorithm. This is often useful for algorithms that build a solution incrementally, or that narrow something down until an answer is found.
+
+Here are some examples of invariants we may use:
+\begin{itemize}
+    \item In binary search, we maintain that if $x$ is in the array, then it is between $l$ and $r$
+    \item In insertion sort, we maintain that the first $k$ numbers in the array are in sorted order, where $k$ is the round we are up to. 
+\end{itemize}
+
+The typical structure of an invariant-based justification is
+\begin{itemize}
+    \item Describe your invariant
+    \item Show that the invariant is true at the start
+    \item Show that \textit{if} your invariant is true at the start of one round of your algorithm, \textit{then} it is still true after that round
+    \item Show that \textit{if} your invariant is true at the end of the algorithm, \textit{then} your algorithm is correct.
+\end{itemize}
+The 2nd and 3rd steps above use induction to show that the invariant remains true throughout the entire algorithm.
+
+It's very important to choose the right invariant - you need to choose your invariant so that if the invariant is true at the end, then your algorithm gives the correct answer. Think about what would happen if we tried to justify binary search using the invariant that $l \leq r$ at all times. While this invariant is true, it doesn't help us at all! It would tell us that $l$ and $r$ get narrowed down to some number, but it tells us nothing about what that number will be.
+
+\textbf{Exercise:} Complete the justification for insertion sort using an invariant.
+\subsection*{Exchanging}
+
+This is a common justification pattern for optimisation problems - we assume that there is a better solution than ours, then exchange some of this better solution with some of the solution our algorithm produces. Here's an example:
+
+\begin{quote}
+    \textbf{Problem:} You are given a binary tree where each node contains a value. What is the largest sum of any path starting at the root and ending at a leaf?
+
+    \textbf{Algorithm:} We use recursion - for a tree with one node, the answer is the value of that node. Otherwise, we find the largest sum of any path starting at the root of the left subtree, and starting at the root of the right subtree. The answer is the larger of the subtree results, plus the value in the root.
+\end{quote}
+In this algorithm, we are making an assumption: to achieve the largest sum overall, we should start with the largest sum in one of the subtrees. This is something we should justify - perhaps, to get the maximum path sum, we should start with a path sum in of the subtrees that isn't the maximum path sum in that subtree. In this example it's quite obvious that taking the maximum path in the subtree is correct, but it isn't always so obvious.
+
+To justify this method, we can use a proof by contradiction with the following structure:
+\begin{itemize}
+    \item Assume there is a path with a larger sum than the one found by our algorithm
+    \item Swap the part of this path that is in the subtree with the subtree path used in our algorithm (i.e. the one with the largest sum).
+    \item Show that this is at least as good as the path we started with, contradicting the assumption that there is a path with a larger sum, and hence showing that our  path is indeed the largest.
+\end{itemize}
+
+This proof style will be explored more in the greedy module.
+
+\subsection*{Monotonicity}
+Often, it is useful to show that the answer to some problem is \textit{monotonic}. This means that as we increase some parameter, the answer only ever increases (or remains the same), or only ever decreases (or stays the same). Monotonicity often allows us to use search methods like binary search, or greedy strategies.
+
+Let's look at an example:
+\begin{quote}
+    You are given a graph where each vertex contains a value, and a starting vertex $s$. You must start at $s$, and take a path of at most $k$ edges. What is the largest node value you can reach? 
+\end{quote}
+
+If the largest node we can reach using up to 4 edges has a 7, then the largest node we can reach using up to 5 edges has to be at least 7. This is because if we can reach a node with a 7 using up to 4 edges, then we can reach that same node using up to 5 edges as well. Similarly, the largest node we can reach using up to 3 edges has to be 7 or less. Hence, the answer to this problem is \textit{monotonic} in $k$. If $k$ increases, the value of the largest node we can reach can only ever stay the same, or go up.
+
+Decision problems, where the answer is `yes' or `no', can also be monotonic - you can think of each `yes' as a 1, and each `no' as a 0. So the problem of "can we reach all the vertices of a graph using $k$ edges" is monotonic in $k$.
+
+To show that a decision problem $P$ is monotonic over integers, we only need to show that if $P(k)$ is `yes', then $P(k+1)$ is also `yes'. We then get for free that $P(k+2), P(k+3)$, and all $P(k' > k)$ is `yes' (by induction). We also get that if $P(k)$ is `no', then $P(k-1)$ is also `no', as this is the contrapositive of \textit{if $P(k-1)$ is `yes', then  $P(k)$ is also `yes'}.
+\end{question}
+\end{document}

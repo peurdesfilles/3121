@@ -1,0 +1,107 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks, subcaption}
+
+\begin{document}
+\task[regular]{RGB}
+
+\begin{question}
+Let $G = (V, E)$ be an undirected and unweighted graph, where each vertex is coloured either red, green, or blue. In this task, we are looking for shortest paths that repeatedly change colour.
+
+For example, consider the graph \(G\) below.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[every node/.style={draw, minimum size=2em}, scale = 1.2]
+        \node [diamond,   fill=blue!20 ] (1) at (1,  0) {$u$};
+        \node [circle,    fill=red!20  ] (2) at (3,  0) {$a$};
+        \node [rectangle, fill=green!20] (3) at (4,  2) {$b$};
+        \node [diamond,   fill=blue!20 ] (4) at (3, -2) {$c$};
+        \node [circle,    fill=red!20  ] (5) at (5,  0) {$d$};
+        \node [rectangle, fill=green!20] (7) at (5, -2) {$e$};
+        \node [rectangle, fill=green!20] (6) at (7,  0) {$v$};
+    
+        \draw
+            (1) edge (2)
+                edge (3)
+                edge (4)
+            (2) edge (4)
+                edge (5)
+            (3) edge (6)
+            (4) edge (5)
+                edge (7)
+            (5) edge (6)
+                edge (7)
+        ;
+    \end{tikzpicture}
+    \label{rgb_graph}
+\end{figure}
+
+The shortest path from \(u\) to \(v\) in \(G\) that does not visit two consecutive vertices of the same colour is the following path.
+
+\begin{center}
+    \begin{tikzpicture}[every node/.style={draw, minimum size=2em}, scale = 1.2]
+        \node [diamond,   fill=blue!20 ] (1) at (0, 0) {$u$};
+        \node [circle,    fill=red!20  ] (2) at (2, 0) {$a$};
+        \node [diamond,   fill=blue!20 ] (3) at (4, 0) {$c$};
+        \node [circle,    fill=red!20  ] (4) at (6, 0) {$d$};
+        \node [rectangle, fill=green!20] (5) at (8, 0) {$v$};
+    
+        \draw[-Latex]
+            (1) edge (2)
+            (2) edge (3)
+            (3) edge (4)
+            (4) edge (5)
+        ;
+    \end{tikzpicture}
+\end{center}
+
+However, the shortest path without the restriction is
+
+\begin{center}
+    \begin{tikzpicture}[every node/.style={draw, minimum size=2em}, scale = 1.2]
+        \node [diamond,   fill=blue!20 ] (1) at (0, 0) {$u$};
+        \node [rectangle, fill=green!20] (2) at (3, 0) {$b$};
+        \node [rectangle, fill=green!20] (3) at (6, 0) {$v$};
+    
+        \draw[-Latex]
+            (1) edge (2)
+            (2) edge (3)
+        ;
+    \end{tikzpicture}
+\end{center}
+
+Our problem is as follows: given two vertices $u$ and $v$, design and analyse an $O(\lvert V \rvert + \lvert E \rvert)$ algorithm that finds the shortest path from $u$ to $v$ that never visits two consecutive vertices of the same colour.
+
+There are two main approaches to this problem:
+\begin{itemize}
+    \item change the graph in some way and directly apply a famous graph algorithm to it, or
+    \item change a famous graph algorithm to suit the requirements of the problem and directly apply it to the given graph.
+\end{itemize}
+
+In this task, you \textbf{must} use the first of these two approaches. This is to instil the ethos of \textit{problem solving by reduction}, i.e. converting instances of the unseen problem to instances of a well-known problem and solving the well-known problem by established methods.
+
+{\bfseries Note:} All graphs in this course are assumed to be simple and connected, and provided as an adjacency list (unless otherwise stated).
+\end{question}
+
+\begin{rubric}
+
+\correctness You need to prove your algorithm is correct without just restating your algorithm. There are two core parts to the proof:
+\begin{itemize}
+    \item Proving that when you apply the established algorithm of your choice to your modified graph, the shortest path that you find does not use edges with both vertices of the same colour. This is what we refer to as the forward direction of the proof.
+    \item Proving that your established graph algorithm will consider any path that does not involve any edges with vertices of the same colour. This is what we refer to as the backwards direction of the proof.
+\end{itemize}
+
+\note The condition that the path must not contain any edge that has two vertices of the same colour is something we would refer to as a constraint.
+
+\expected[1]{half a page.}
+\end{rubric}
+
+\clearpage
+\begin{solution}
+% Write your solution here.
+\end{solution}
+\begin{attribution}
+% Write any attributions here.
+\end{attribution}
+
+\end{document}
