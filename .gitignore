@@ -1,0 +1,44 @@
+# LaTeX intermediate and output files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.dvi
+*.ps
+*.pdf
+
+# Temporary files
+*~
+*.tmp
+*.swp
+*.swo
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor specific (if using VS Code, TeXstudio, etc.)
+.vscode/
+*.texbak
+*.bak
+*.backup
+*.synctex
+
+# Latexmk
+latexmkrc
