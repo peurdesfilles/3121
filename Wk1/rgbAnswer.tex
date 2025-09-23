@@ -1,0 +1,53 @@
+
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+\usepackage{listings}
+
+\usepackage{xcolor} % pretty colours
+\usepackage{varwidth}
+\title{1.4 RGB}
+\author{Andre Monteiro}
+\date{Term 3, 2025}
+
+\begin{document}
+\maketitle
+\newpage
+\subsection*{Algorithm}
+Reduce the problem to an ordinary shortest path instance.  
+First filter the graph so that it only
+contains edges that join vertices of \emph{different} colours,  
+then a plain BFS gives the required path.
+
+\begin{enumerate}
+\item Build a new graph \(G'=(V,E')\) with
+\[
+E'=\{\{x,y\}\in E : \mathrm{colour}(x)\neq \mathrm{colour}(y)\}.
+\]
+Checking each original edge once costs \(O(|E|)\).
+
+\item Run a standard BFS from \(u\) to \(v\) on \(G'\) and output the path it finds. \\
+\[
+\text{Time complexity of BFS: } O(|V| + |E|)
+\]
+
+\end{enumerate}
+
+\subsection*{Complexity}
+Total time is
+\[
+O(|E|) + O(|V| + |E'|)
+= O(|V| + |E| + |E'|).
+\]
+Since \(E' \subseteq E\), we have \(|E'|\le |E|\), so
+\[
+O(|V| + |E| + |E'|) = O(|V| + 2|E|) = O(|V| + |E|).
+\]
+
+\subsection*{Conclusion}
+By reducing the graph first and then calling BFS,
+the shortest colour alternating path is found in:
+\[
+\boxed{O(|V| + |E|)}
+\]
+
+\end{document}
