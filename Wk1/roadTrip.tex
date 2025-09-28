@@ -1,0 +1,278 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+\usepackage{listings}
+
+\usepackage{xcolor} % pretty colours
+\usepackage{varwidth}
+\usetikzlibrary{shapes}
+\usepackage{subcaption}
+\usepackage{soul}
+
+\colorlet{myred}{red!60!black}
+\colorlet{myblue}{blue!60!black}
+
+\newcommand{\R}[1]{{\color{myred}#1}}
+\newcommand{\B}[1]{{\color{myblue}#1}}
+\definecolor{forestgreen}{RGB}{34,139,34}
+
+\DeclareMathOperator{\arr}{\mathsf{Arrive}}
+\DeclareMathOperator{\dep}{\mathsf{Depart}}
+\DeclareMathOperator{\toll}{\mathsf{Toll}}
+\DeclareMathOperator{\s}{\mathsf{Start}}
+\DeclareMathOperator{\e}{\mathsf{End}}
+
+\title{1.7 Road Trip}
+\author{Andre Monteiro}
+\date{Term 3, 2025}
+
+\begin{document}
+\maketitle
+\newpage
+\subsection*{Problem}
+This task involves creating a Road Trip $R$ within Austria.
+
+\emph{$R$ is a path through Austria where you arrive at a town by plane, visit one or more towns via roads and then leave by plane. 
+}
+
+For example: 
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[{every text node part/.style={align=center}}, scale = 0.8]
+      \node[draw, circle] (a) at (0,0) {Vienna \\ \R{$\mathsf{A} = 2$} \\ \B{$\mathsf{D} = 8$}};
+      \node[draw, circle] (b) at (6,0) {Graz \\ \R{$\mathsf{A} = 5$} \\ \B{$\mathsf{D} = 5$}};
+      \node[draw, circle] (c) at (3,2) {Salzburg \\ \R{$\mathsf{A} = 10$} \\ \B{$\mathsf{D} = 1$}};
+      \node[draw, circle] (d) at (10,2) {Innsbruck \\ \R{$\mathsf{A} = 1$} \\ \B{$\mathsf{D} = 1$}};
+    
+      \path (a) edge node [below] {1} (b);
+      \path (a) edge node [above left] {5} (c);
+      \path (c) edge node [above right] {2} (b);
+      \path (b) edge node [above left] {100} (d);
+    \end{tikzpicture}
+    \caption{}
+    \label{example-1}
+\end{figure}
+
+In Figure 1, the cheapest road trip is to enter at Vienna, drive to Graz then Salzburg, and leave via Salzburg. The total cost is $$\arr(\text{Vienna}) + \toll(\text{Vienna}, \text{Graz}) + \toll(\text{Graz}, \text{Salzburg}) + \dep(\text{Salzburg}) = 2 + 1 + 2 + 1 = 6.$$ While it would be cheaper to fly into Innsbruck then immediately fly out, this is not a road trip as no roads are taken. Finally, a road trip does not have to include all towns.
+
+\newpage
+
+\subsection*{Solution}
+The intention of this problem, is to solve it via reduction, and have a resultant time complexity of: 
+\[
+O(n \log(m))
+\]
+
+Together with a shortest-path graph problem, this points to Dijkstra's Algorithm as the solution. Before we can apply it, however, we need to design a graph that can be processed by the algorithm.
+
+To be specific, we want to use Dijkstra's to find the shortest path from a \textbf{single source} to all other vertices in a graph with non-negative edge weights.
+The key point here, is that we need all values to appropriately be modelled as vertices, e.g. have a node for arrival and depature weights. 
+
+As such, we begin the algorithm by first inserting a node that has vertices connected to all vertices that have an arrival and/or depature cost, to model these weights accurately. 
+
+Using the previous example: 
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[{every text node part/.style={align=center}}, scale = 0.8]
+    % vertices
+    \node[draw, circle] (dep) at (4,-5) {Departure};
+    \node[draw, circle] (a) at (0,0) {Vienna};
+    \node[draw, circle] (b) at (6,0) {Graz};
+    \node[draw, circle] (c) at (3,2) {Salzburg};
+    \node[draw, circle] (d) at (10,2) {Innsbruck};
+    \node[draw, circle] (e) at (3,8) {Arrival};
+
+    % edges between cities
+    \path[blue, thick] (a) edge node [below] {1} (b);
+    \path[blue, thick] (a) edge node [above left] {5} (c);
+    \path[blue, thick] (c) edge node [above right] {2} (b);
+    \path[blue, thick] (b) edge node [above left] {100} (d);
+
+    % Arrival
+    \path[green, thick] (a) edge node [right] {2} (e);
+    \path[green, thick] (b) edge node [right] {5} (e);
+    \path[green, thick] (c) edge node [right] {10} (e);
+    \path[green, thick] (d) edge node [right] {1} (e);
+
+    % Departure 
+    \path[red, thick] (dep) edge node [below left] {8} (a);
+    \path[red, thick] (dep) edge node [below] {5} (b);
+    \path[red, thick] (dep) edge node [below right] {1} (c);
+    \path[red, thick] (dep) edge node [right] {1} (d);
+    
+    \node[draw, rounded corners, fill=gray!10, inner sep=5pt] at (11,8) {
+        \begin{tabular}{l l}
+        \tikz \draw[-, red, thick] (0,0) -- (0.5,0); & Departure edges \\
+        \tikz \draw[-, blue, thick] (0,0) -- (0.5,0); & City-to-city edges \\
+        \tikz \draw[-, green, thick] (0,0) -- (0.5,0); & Arrival Edges \\
+        \end{tabular}
+    };
+    \end{tikzpicture}
+\caption{}
+\label{eg-1}
+\end{figure}
+\newpage
+Time complexity: 
+\[
+\begin{aligned}
+&\text{Insertion for Arrival vertices:} && O(m) \\
+&\text{Insertion for Departure vertices:} && O(m) \\
+&\text{Total insertion:} && O(m) + O(m) = O(m)
+\end{aligned}
+\]
+
+A small improvement we can make when considering aymptomatic complexity, is to create the vertices for Arrival and Departure as directed edges, and therefore slightly reduce time:
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[{every text node part/.style={align=center}}, scale = 0.8]
+    % vertices
+    \node[draw, circle] (dep) at (4,-5) {Departure};
+    \node[draw, circle] (a) at (0,0) {Vienna};
+    \node[draw, circle] (b) at (6,0) {Graz};
+    \node[draw, circle] (c) at (3,2) {Salzburg};
+    \node[draw, circle] (d) at (10,2) {Innsbruck};
+    \node[draw, circle] (e) at (3,8) {Arrival};
+
+    % edges between cities
+    \path[<->, blue, thick] (a) edge node [below] {1} (b);
+    \path[<->, blue, thick] (a) edge node [above left] {5} (c);
+    \path[<->, blue, thick] (c) edge node [above right] {2} (b);
+    \path[<->, blue, thick] (b) edge node [above left] {100} (d);
+
+    % Arrival
+    \path[<-, green, thick] (a) edge node [right] {2} (e);
+    \path[<-, green, thick] (b) edge node [right] {5} (e);
+    \path[<-, green, thick] (c) edge node [right] {10} (e);
+    \path[<-, green, thick] (d) edge node [right] {1} (e);
+
+    % Departure 
+    \path[<-, red, thick] (dep) edge node [below left] {8} (a);
+    \path[<-, red, thick] (dep) edge node [below] {5} (b);
+    \path[<-, red, thick] (dep) edge node [below right] {1} (c);
+    \path[<-, red, thick] (dep) edge node [right] {1} (d);
+
+    \node[draw, rounded corners, fill=gray!10, inner sep=5pt] at (9,8) {
+        \begin{tabular}{l l}
+        \tikz \draw[->, red, thick] (0,0) -- (0.5,0); & Departure edges \\
+        \tikz \draw[<->, blue, thick] (0,0) -- (0.5,0); & City-to-city edges \\
+        \tikz \draw[<-, green, thick] (0,0) -- (0.5,0); & Arrival Edges \\
+        \end{tabular}
+    };
+
+    \end{tikzpicture}
+\caption{}
+\label{eg-2}
+\end{figure}
+\newpage
+
+After adding the two reference vertices for Arrival and Departure, we now can apply Dijkstra's! However, we find that one illegal path still exists, that will be taken: 
+
+\[
+\arr(\text{Innsbruck}) + \dep(\text{Innsbruck}) = 1 + 1 = 2. 
+\]
+We need to account for the (1) road taken rule. In order to do so, we now introduce a new layer of vertices, that act as a gateway into the rest of the network, seperating Arrival from Departure by at least one "road", e.g. now the fastest path is accurately 
+\[
+\arr(\text{Vienna}) + \toll(\text{Vienna}, \text{Graz}) + \toll(\text{Graz}, \text{Salzburg}) + \dep(\text{Salzburg}) = 2 + 1 + 2 + 1 = 6.
+\]
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[{every text node part/.style={align=center}},scale=0.8]
+
+    % Super vertices
+    \node[draw, circle] (dep) at (5,-8) {Departure};
+    \node[draw, circle] (arr) at (3,8) {Arrival};
+
+    % City0 
+    \node[draw, rectangle] (a0) at (0,4) {Vienna$_0$};
+    \node[draw, rectangle] (b0) at (6,4) {Graz$_0$};
+    \node[draw, rectangle] (c0) at (3,4) {Salzburg$_0$};
+    \node[draw, rectangle] (d0) at (10,4) {Innsbruck$_0$};
+
+    % City1 
+    \node[draw, circle, dashed] (a1) at (0,-4) {Vienna$_1$};
+    \node[draw, circle, dashed] (b1) at (6,-4) {Graz$_1$};
+    \node[draw, circle, dashed] (c1) at (3,-2.5) {Salzburg$_1$};
+    \node[draw, circle, dashed] (d1) at (10,-2.5) {Innsbruck$_1$};
+
+    % Arrival 
+    \path[->, green, thick] (arr) edge node[above, sloped] {2} (a0);
+    \path[->, green, thick] (arr) edge node[above, sloped] {5} (b0);
+    \path[->, green, thick] (arr) edge node[above, sloped] {10} (c0);
+    \path[->, green, thick] (arr) edge node[above, sloped] {1} (d0);
+
+    % City0 -> City1 
+    \path[->, purple!70!black, thick, loosely dashed]
+    (a0) edge[bend left] node[above, sloped] {1} (b1)
+    (a0) edge[bend right] node[above, sloped] {5} (c1);
+    \path[->, blue!70!black, very thick, densely dashed]
+    (b0) edge[bend left] node[above, sloped] {100} (d1)
+    (b0) edge[bend right] node[below, sloped] {1} (a1)
+    (b0) edge[bend left] node[above, sloped] {2} (c1);
+    \path[->, orange!80!black, thick, densely dotted]
+    (c0) edge[bend left] node[above, sloped] {2} (b1)
+    (c0) edge[bend right] node[above, sloped] {5} (a1);
+    \path[->, red!70!black, thick, dash dot]
+    (d0) edge[below left] node[below, sloped] {100} (b1);
+
+    % City1 <-> City1
+    \path[<->, blue, thick, dashed]
+    (a1) edge node[below, sloped] {1} (b1)
+    (a1) edge node[above, sloped] {5} (c1)
+    (c1) edge node[above, sloped] {2} (b1)
+    (b1) edge node[above, sloped] {100} (d1);
+
+    % Dep City1
+    \path[->, red, thick] (a1) edge node[above, sloped] {8} (dep);
+    \path[->, red, thick] (b1) edge node[above, sloped] {5} (dep);
+    \path[->, red, thick] (c1) edge node[above, sloped] {1} (dep);
+    \path[->, red, thick] (d1) edge node[above, sloped] {1} (dep);
+
+    \node[draw, rounded corners, fill=gray!10, inner sep=5pt] at (17,7) {
+        \begin{tabular}{l l}
+        \tikz \draw[->, green, thick] (0,0) -- (0.5,0); & Arrival $\to$ City$_0$ \\
+        \tikz \draw[->, purple!70!black, thick, loosely dashed] (0,0) -- (0.5,0); & Vienna $\to$ City$_1$ \\
+        \tikz \draw[->, orange!80!black, thick, densely dotted] (0,0) -- (0.5,0); & Salzburg $\to$ City$_1$ \\
+        \tikz \draw[->, blue!70!black, very thick, densely dashed] (0,0) -- (0.5,0); & Graz $\to$ City$_1$ \\
+        \tikz \draw[->, red!70!black, thick, dash dot] (0,0) -- (0.5,0); & Innsbruck $\to$ City$_1$ \\
+        \tikz \draw[<->, blue, thick, dashed] (0,0) -- (0.5,0); & further roads City$_1\leftrightarrow$City$_1$ \\
+        \tikz \draw[->, red, thick] (0,0) -- (0.5,0); & City$_1 \to$ Departure \\
+        \end{tabular}
+    };
+
+    \end{tikzpicture}
+    \caption{Layered graph with new “before road” (\_0) and “after road” (\_1) vertices.}
+\end{figure}
+\newpage
+\subsection*{Time Complexity}
+The time complexity of adding this new layer of vertices is 
+\[
+\begin{aligned}
+&\text{Vertices:} \\
+&\text{Vertice vertices:} && 2n \quad (\text{one City$_0$ and one City$_1$ for each original city}) \\
+&\text{Dep and Arr:} && 2 \\
+&\text{Total vertices:} && 2n + 2 = O(n) \\[2mm]
+&\text{Edges:} \\
+&\text{Edges for Arrival/Departure:} && 2n \quad (\text{Arrival → City$_0$, City$_1$ → Departure}) \\
+&\text{Edges per original road:} && 4m \quad (\text{bidirectional original edge + City$_0 \to$ City$_1$ edge endpoints}) \\
+&\text{Total edges:} && 2n + 4m = O(m+n)
+\end{aligned}
+\]
+
+
+\subsection*{Final Time Complexity}
+\[
+\begin{aligned}
+&\text{Total vertices:} && 2n + 2 = O(n) \\[2mm]
+&\text{Total edges:} && 2n + 4m = O(m+n) \\
+&\text{Shortest path using Dijkstra:} && O((m+n)\log n) \\
+&\text{Simplification for connected graph:} && m \ge n-1 \implies O((m+n)\log n) = O(m \log n) \\[1mm]
+\end{aligned}
+\]
+As we know that the amount of edges will always be at least double than the amount of vertices (worst case, every vertice requires at worst an edge to Arr and Dep), we can conclude that the total time is:
+
+\[
+\boxed{O(m \log n)}
+\]
+
+\end{document}
