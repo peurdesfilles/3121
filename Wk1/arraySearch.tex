@@ -33,8 +33,8 @@
         \] \\
         \end{varwidth}
         \\ 
-        $k$ can appear in the first row before the last element, in the first column, or in the submatrix below the first row and left of the last column.  
-        \\\\ All these positions contain elements strictly less than $A[1][n]$, so they may include $k$ without violating the sorted property.
+        $k$ cannot appear in the last column or at $A[1][n]$ as subsequent elements must be strictly larger than $A[1][n]$, but may appear in the submatrix left of the last column, 
+        \\\\ Since these positions are strictly less than elements below or to their right but may still equal $k$, they are potential candidates.
         \item \textbf{Case 2:} $A[1][n] < k$ \\
         \begin{varwidth}{\textwidth}
         \[ \hspace{15em}
@@ -46,44 +46,66 @@
         \] \\
         \end{varwidth}
         \\ 
-        $k$ cannot appear in the first row or at $A[1][n]$, but may appear in the submatrix below the first row and left of the last column, or in the last column below the first row.  
+        $k$ cannot appear in the first row or at $A[1][n]$ as the previous elements must be strictly smaller than $A[1][n]$, but may appear in the submatrix below the first row and left of the last column, or in the last column below the first row.  
         \\\\ Since these positions are strictly greater than elements above or to their left but may still equal $k$, they are potential candidates.
         \item \textbf{Case 3:} $A[1][n] = k$ \\
         \begin{varwidth}{\textwidth}
         \[ \hspace{15em}
         \begin{bmatrix}
         \textcolor{red}{a_{11}} & \textcolor{red}{a_{12}} & \textcolor{green}{a_{13}} \\
-        \textcolor{red}{a_{21}} & \textcolor{red}{a_{22}} & \textcolor{red}{a_{23}} \\
-        \textcolor{red}{a_{31}} & \textcolor{red}{a_{32}} & \textcolor{red}{a_{33}}
+        \textcolor{green}{a_{21}} & \textcolor{green}{a_{22}} & \textcolor{red}{a_{23}} \\
+        \textcolor{green}{a_{31}} & \textcolor{green}{a_{32}} & \textcolor{red}{a_{33}}
         \end{bmatrix}
         \] \\
         \end{varwidth}
         \\ 
-         $k$ is found at the top-right corner; the search terminates immediately.  
-        \\\\ The element matches $k$, so no further search is needed. \newpage
+        As $A[1][n] = k$, the previous row elements must be smaller, and the column element larger. This implies only $A[1][n]$ and the subarray not intersecting with either column or row of $A[1][n]$, are valid targets for $k$.
+        \\\\ The element matches $k$, so no further search is technically needed. \newpage
     \end{itemize} 
 
-    \item 
-    Let $A \in \mathbb{R}^{n \times n}$ be strictly increasing in rows and columns, and let $k$ be the target integer.  
-    Start at the top-right element: $i = 1$, $j = n$. Then repeat:
+\subsection*{Algorithm}
 
-    \[
-    \text{while } i \le n \text{ and } j \ge 1:
-    \begin{cases}
-    A[i][j] = k &\Rightarrow \text{return True} \\
-    A[i][j] > k &\Rightarrow j \gets j - 1 \\
-    A[i][j] < k &\Rightarrow i \gets i + 1
-    \end{cases}
-    \]
+We describe an algorithm to determine whether a target value \(k\) is present in a matrix \(A\) where each row and each column is sorted in increasing order.
 
-    If the loop ends without finding $k$, return False.
+\paragraph{1. Start at the top-right corner of the matrix}  
 
-    \textbf{Complexity Analysis}
+\begin{itemize}
+    \item Begin with the element in the first row and last column (\(i=1, j=n\)).
 
-    \begin{itemize}
-        \item \textbf{Time Complexity:} $O(n)$, since each step either moves down one row or left one column, and there are at most $n$ rows and $n$ columns.
-        \item \textbf{Space Complexity:} $O(1)$, as only two index variables $i$ and $j$ are used.
-    \end{itemize}
+    \emph{Justification:} The top-right element is the largest in its row and the smallest in its column. This position allows us to make a clear decision at each step: whether to move left or down depending on how the element compares to \(k\).
+    
+\end{itemize}
+
+\paragraph{2. While \(i \le n\) and \(j \ge 1\), compare \(A[i][j]\) with \(k\)}
+
+\begin{itemize}
+\item \textbf{If \(A[i][j] = k\):} Report success and terminate. This is hte first case for early termination and avoids unncessary searching.
+
+\emph{Justification:} Finding \(k\) satisfies the search condition; no further steps are necessary.
+  
+\item \textbf{If \(A[i][j] > k\):} Move one column to the left (\(j \gets j-1\)).  
+
+\emph{Justification:}  
+All entries below \(A[i][j]\) in the same column are greater than or equal to \(A[i][j]\). Since \(A[i][j] > k\), \(k\) cannot appear in this column below the current element. Moving left allows us to examine smaller elements in the current row.
+  
+\item \textbf{If \(A[i][j] < k\):} Move one row down (\(i \gets i+1\)).  
+
+\emph{Justification:}  
+All entries to the left of \(A[i][j]\) in the same row are less than or equal to \(A[i][j]\). Since \(A[i][j] < k\), \(k\) cannot appear in this row to the left. Moving down allows us to examine larger elements in the current column.
+\end{itemize}
+
+\paragraph{3. Termination}  
+If the search moves out of the bounds of the matrix without finding \(k\), report that \(k\) is not present.
+
+\emph{Justification:}  
+Each step eliminates at least one row or one column from consideration. Therefore, the algorithm cannot loop infinitely and will terminate. If \(k\) exists in the matrix, the algorithm will reach it, and if it does not exist, the algorithm will correctly report its absence. \\
+
+
+\textbf{Complexity Analysis}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} $O(n)$, since each step either moves down one row or left one column, and there are at most $n$ rows and $n$ columns.
+\end{itemize}
 \end{enumerate}
 
 \end{document}

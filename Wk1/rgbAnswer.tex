@@ -2,6 +2,7 @@
 \documentclass[12pt]{article}
 \usepackage{algos-tasks}
 \usepackage{listings}
+\usepackage{amsmath, amssymb}
 
 \usepackage{xcolor} % pretty colours
 \usepackage{varwidth}
@@ -12,23 +13,31 @@
 \begin{document}
 \maketitle
 \newpage
-\subsection*{Algorithm}
-Reduce the problem to an ordinary shortest path instance.  
-First filter the graph so that it only
-contains edges that join vertices of \emph{different} colours,  
-then a plain BFS gives the required path.
 
+\subsection*{Algorithm}
+Reduce the problem to an ordinary shortest path instance by first filter the graph so that it only contains edges that join vertices of different colours.  
+
+
+Then a plain BFS gives the required path.  
 \begin{enumerate}
 \item Build a new graph \(G'=(V,E')\) with
 \[
 E'=\{\{x,y\}\in E : \mathrm{colour}(x)\neq \mathrm{colour}(y)\}.
 \]
 Checking each original edge once costs \(O(|E|)\).
-
-\item Run a standard BFS from \(u\) to \(v\) on \(G'\) and output the path it finds. \\
+\paragraph{Justification (validity of G')}
+\begin{itemize}
+    \item Every colour-alternating path in the original graph consists only of edges connecting vertices of different colours, so these edges are preserved in \(G'\). Conversely, any path in \(G'\) uses only edges joining different colours, so any path found in \(G'\) is a valid colour-alternating path in \(G\).
+\end{itemize}
+\item Run a standard BFS from \(u\) to \(v\) on \(G'\) and output the path it finds.
 \[
-\text{Time complexity of BFS: } O(|V| + |E|)
+\text{Time complexity of BFS: } O(|V| + |E'|)
 \]
+\paragraph{Justification (Choice of BFS)}
+\begin{itemize}
+\item BFS finds a path with the minimum number of edges in an unweighted graph. Since \(G'\) preserves all legal alternating edges from \(G\), this path is a shortest colour-alternating path.
+\end{itemize}
+
 
 \end{enumerate}
 
@@ -42,10 +51,39 @@ Since \(E' \subseteq E\), we have \(|E'|\le |E|\), so
 \[
 O(|V| + |E| + |E'|) = O(|V| + 2|E|) = O(|V| + |E|).
 \]
+\newpage
+
+\subsection*{Correctness Proof}
+\paragraph{Forward direction (forward correctness)}  
+\begin{itemize}
+
+\item We need to prove that when BFS is applied to the filtered graph \(G'\), the shortest path it finds does not use edges with both vertices of the same colour.
+
+\begin{itemize}
+\item By construction, \(G' = (V,E')\) where 
+\[
+E' = \{\{x,y\}\in E : \mathrm{colour}(x) \neq \mathrm{colour}(y)\}.
+\]
+\item BFS only traverses edges in \(G'\).  
+\item Therefore, every edge in any path returned by BFS connects vertices of different colours.  
+\item Consequently, any path found by BFS is a valid colour-alternating path in the original graph \(G\).
+\end{itemize}
+
+\end{itemize}
+\paragraph{Backward direction (backward completeness)} 
+\begin{itemize}
+    \item We need to prove that BFS on \(G'\) will consider every path that does not use edges with vertices of the same colour.
+
+\begin{itemize}
+\item Let \(p\) be any colour-alternating path in the original graph \(G\).  
+\item By definition, all edges of \(p\) connect vertices of different colours.  
+\item Since \(G'\) contains all edges connecting vertices of different colours, \(p\) exists as a path in \(G'\).  
+\item BFS explores all paths in \(G'\), so every colour-alternating path in \(G\) is considered by the algorithm.
+\end{itemize}
+\end{itemize} 
 
 \subsection*{Conclusion}
-By reducing the graph first and then calling BFS,
-the shortest colour alternating path is found in:
+By reducing the graph first and then calling BFS, the shortest colour-alternating path is found in:
 \[
 \boxed{O(|V| + |E|)}
 \]
