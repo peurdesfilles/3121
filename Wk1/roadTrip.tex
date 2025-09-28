@@ -58,19 +58,18 @@ In Figure 1, the cheapest road trip is to enter at Vienna, drive to Graz then Sa
 \newpage
 
 \subsection*{Solution}
-The intention of this problem, is to solve it via reduction, and have a resultant time complexity of: 
+The intention of this problem is to solve it via reduction, achieving a resultant time complexity of:
 \[
-O(n \log(m))
+O(n \log m)
 \]
+We model the problem as a weighted graph with non-negative edges and apply Dijkstra’s algorithm to find shortest paths efficiently.  
+To avoid the cost of computing all-pairs distances, we introduce a single Arrival node and a single Departure node.  
+The Arrival node connects to every city with an edge weighted by its arrival cost, and the Departure node connects from every city with an edge weighted by its departure cost.
 
-Together with a shortest-path graph problem, this points to Dijkstra's Algorithm as the solution. Before we can apply it, however, we need to design a graph that can be processed by the algorithm.
+These nodes ensure there is exactly one source for Dijkstra to start from and that all arrival and departure costs are correctly represented.  
 
-To be specific, we want to use Dijkstra's to find the shortest path from a \textbf{single source} to all other vertices in a graph with non-negative edge weights.
-The key point here, is that we need all values to appropriately be modelled as vertices, e.g. have a node for arrival and depature weights. 
-
-As such, we begin the algorithm by first inserting a node that has vertices connected to all vertices that have an arrival and/or depature cost, to model these weights accurately. 
-
-Using the previous example: 
+At this stage, every path from Arrival to Departure includes exactly one arrival cost and one departure cost, so any path considered by Dijkstra accounts for these endpoints.  
+This reduction allows a single run of Dijkstra’s to solve the problem efficiently, avoiding the overhead of all-pairs computations.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[{every text node part/.style={align=center}}, scale = 0.8]
@@ -165,13 +164,30 @@ A small improvement we can make when considering aymptomatic complexity, is to c
 \label{eg-2}
 \end{figure}
 \newpage
-
-After adding the two reference vertices for Arrival and Departure, we now can apply Dijkstra's! However, we find that one illegal path still exists, that will be taken: 
+After adding the Arrival and Departure reference vertices, we can run Dijkstra’s.  
+However, one illegal path remains:
 
 \[
-\arr(\text{Innsbruck}) + \dep(\text{Innsbruck}) = 1 + 1 = 2. 
+\arr(\text{Innsbruck}) + \dep(\text{Innsbruck}) = 1 + 1 = 2,
 \]
-We need to account for the (1) road taken rule. In order to do so, we now introduce a new layer of vertices, that act as a gateway into the rest of the network, seperating Arrival from Departure by at least one "road", e.g. now the fastest path is accurately 
+
+which violates the “at least one road taken” rule.
+
+To enforce this, we insert a gateway layer of vertices between Arrival and Departure.  
+Each gateway node represents the entry point to a real road.  
+Edges from the Arrival node to these gateways carry the arrival cost for that city,  
+edges from gateways to the corresponding city nodes carry the road tolls,  
+and edges from city nodes to the Departure node carry the departure cost.
+
+This construction guarantees that every valid path must:
+1. start at the Arrival node (paying exactly one arrival cost),
+2. pass through at least one gateway edge (paying at least one road toll), and
+3. end at the Departure node (paying exactly one departure cost).
+
+Therefore every path in the graph exactly matches a legal road trip:
+it always factors in the arrival cost + at least one road toll + the departure cost,
+so Dijkstra’s algorithm finds the true minimal-cost trip that satisfies the “one road taken” constraint.
+
 \[
 \arr(\text{Vienna}) + \toll(\text{Vienna}, \text{Graz}) + \toll(\text{Graz}, \text{Salzburg}) + \dep(\text{Salzburg}) = 2 + 1 + 2 + 1 = 6.
 \]
