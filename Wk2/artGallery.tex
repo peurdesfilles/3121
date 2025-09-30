@@ -170,27 +170,40 @@ As such, the algorithm places \textbf{one guard}, which is indeed the optimal so
 
 \subsection*{Correctness Argument (Through induction)}
 
-We aim to prove that the greedy algorithm correctly places the minimum number of guards required to protect all paintings, given that each guard covers a range of 2 units (from $x - 1$ to $x + 1$).
+We aim to prove that the greedy algorithm correctly places the minimum number of guards required to protect all paintings, given that each guard covers a range of 2 units (from \( x - 1 \) to \( x + 1 \)).
 
-\paragraph{Claim:} The greedy algorithm always produces an optimal (i.e., minimal) number of guards to cover all paintings in the array $P = [p_1, p_2, \dots, p_n]$, where $p_i$ represents the position of the $i^{\text{th}}$ painting.
+\paragraph{Claim:}  
+The greedy algorithm always produces an optimal (i.e., minimal) number of guards to cover all paintings in the array \( P = [p_1, p_2, \dots, p_n] \), where \( p_i \) represents the position of the \( i^{\text{th}} \) painting.
 
 \paragraph{Base Case (1 painting):}  
-If there is only one painting, the algorithm places one guard at position $p_1 - 1$, which fully covers the painting at $p_1$. Since at least one guard is needed to cover a painting, this is clearly optimal.
+If there is only one painting, the algorithm places a guard at position \( p_1 + 1 \), which covers the interval \( [p_1, p_1 + 2] \) and thus protects the painting. Since any valid solution must use at least one guard to cover one painting, the algorithm is clearly optimal in this case.
 
 \paragraph{Inductive Hypothesis:}  
-Assume that for any list of $k$ paintings (where $1 \leq k < n$), the greedy algorithm places the minimum number of guards necessary to fully cover all $k$ paintings.
+Assume that for any sorted list of \( k \) paintings (where \( 1 \leq k < n \)), the greedy algorithm places the minimum number of guards necessary to cover all \( k \) paintings.
 
 \paragraph{Inductive Step:}  
-We must show that the algorithm also produces an optimal result for $k + 1$ paintings.
+We now prove that the algorithm also places the minimum number of guards for \( k + 1 \) paintings.
 
-The algorithm examines the leftmost unprotected painting $p_i$ and places a guard at position $p_i + 1$, which covers all paintings in the range $[p_i, p_i + 2]$. It then skips all paintings in that range and repeats the process for the next unprotected painting.
+Let \( p_i \) be the leftmost unprotected painting.  
+The algorithm places a guard at position \( p_i + 1 \), which protects paintings in the interval \( [p_i, p_i + 2] \). It then proceeds to the next unprotected painting and repeats the process.
 
-Suppose there exists an alternative solution that uses fewer guards. Then, it must have covered $p_i$ without placing a guard covering $[p_i, p_i + 2]$. But since $p_i$ is the leftmost unprotected painting, and no guard before this step covers it, any solution must place a guard whose range includes $p_i$. Placing it any farther to the right would miss $p_i$, and placing it farther to the left would not cover more paintings (due to the sorted nature of the array). Therefore, the greedy placement is locally optimal and does not prevent future optimal placements.
+Consider the last painting in the sequence, \( p_{k+1} \), and examine the two possibilities:
 
-By the inductive hypothesis, the remaining $k$ paintings (after skipping those covered) are also covered optimally.
+\begin{itemize}
+    \item \textbf{Case 1:} \( p_{k+1} \) is already covered by a guard placed earlier. \\
+    In this case, the inductive hypothesis guarantees that all previous paintings (including \( p_{k+1} \)) have already been covered using the minimum number of guards. No additional guard is needed, so the algorithm remains optimal.
+
+    \item \textbf{Case 2:} \( p_{k+1} \) is not yet covered. \\
+    Then the algorithm places a guard at \( p_{k+1} + 1 \), covering the interval \( [p_{k+1}, p_{k+1} + 2] \). 
+
+    Suppose there exists an alternative solution that uses fewer guards to cover all \( k+1 \) paintings. Since \( p_{k+1} \) is not covered by previous guards, any valid solution must place an additional guard to protect it. Placing this guard at any position other than \( p_{k+1} + 1 \) either (1) fails to cover \( p_{k+1} \), or (2) covers fewer paintings than the greedy placement. Hence, the greedy choice is at least as good as any alternative.
+\end{itemize}
+
+In either case, the greedy algorithm uses no more guards than any alternative, maintaining optimality.
 
 \paragraph{Conclusion:}  
-By induction, the greedy algorithm correctly computes the minimal number of guards required to protect any number of paintings, and thus is optimal.
+By the principle of mathematical induction, the greedy algorithm places the minimum number of guards needed to protect any number of paintings. Therefore, the algorithm is correct and optimal.
+
 \newpage
 \subsection*{Time Complexity}
 
