@@ -1,0 +1,68 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+
+\begin{document}
+\task[regular]{Chores}
+\begin{question}
+You are given \(n\) chores to complete over the next \(n\) days. Each chore takes one day to complete, and only one chore can be done each day. Your parents have kindly agreed to pay you \(p_i > 0\) cents if you finish the \(i\)th chore at or before the end of the corresponding due date \(t_i \geq 1\). You do not receive payment if you complete the \(i\)th chore after day \(t_i\).
+
+For example, suppose that we have the chores specified in the table below. Doing chore X on either of the first two days earns you 20 cents, but doing chore X on day 3 earns you no money. The best solution is to do chores Z and Y on days 1 and 2 respectively, for a total of 80 cents.
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline 
+        \(i\) & X & Y & Z  \\ \hline 
+        \(p_i\) & 20 & 50 & 30 \\ \hline
+        \(t_i\) & 2 & 2 & 1 \\ \hline
+    \end{tabular}
+\end{center}
+
+Suppose we have a greedy algorithm that finds the optimal solution, that is, a way of scheduling the chores that maximises the total profit.
+
+Consider the following input.
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline 
+        \(i\) & U & V & W & X & Y & Z \\ \hline 
+        \(p_i\) & 40 & 20 & 30 & 50 & 60 & 40 \\ \hline
+        \(t_i\) & 1 & 2 & 3 & 3 & 6 & 6 \\ \hline
+    \end{tabular}
+\end{center}
+
+On this input, our algorithm produces the following schedule of chores.
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline 
+        Day         & 1 & 2 & 3 & 4 & 5 & 6 \\ \hline 
+        Chore ($i$) & U & W & X & \cdot & Z & Y \\ \hline
+    \end{tabular}
+\end{center}
+
+In this case we have
+$$
+    \text{Total Profit} = 40 + 30 + 50 + 40 + 60 = 220.
+$$
+
+\begin{enumerate}
+    \item \label{chores-heuristic} Determine the greedy heuristic used by the algorithm applied above.
+    \item \label{chores-algorithm} \textbf{(Optional)} Design and analyse an \(O(n^2)\) algorithm\footnote{This can be improved further to \(O(n\log n)\).} which uses the greedy heuristic from part \ref{chores-heuristic} to schedule your chores to maximise your total income.
+\end{enumerate}
+
+\end{question}
+\begin{rubric}
+\begin{enumerate}
+    \item There are multiple correct answers.
+    
+    \expected[1]{a few sentences.}
+\end{enumerate}
+\end{rubric}
+\newpage
+\begin{solution}
+    % Write your solution here.
+\end{solution}
+\begin{attribution}
+    % Write any attributions here.
+\end{attribution}
+\end{document}

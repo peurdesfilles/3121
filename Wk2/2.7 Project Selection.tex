@@ -1,0 +1,41 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+
+\begin{document}
+\task[regular]{Project Selection}
+\begin{question}
+You have some free time and have decided to improve your coding skills by completing a series of personal projects.
+
+After a brainstorming session, you have come up with a list of $n$ projects. For project $i$, the minimum knowledge level required to start the project is given by $r_i$, and the amount of knowledge you will gain by completing the project is given by $g_i$.
+
+You begin with an initial knowledge level of $s$. Unfortunately, you only have enough time to complete exactly $k < n$ projects before you will again be inundated with coursework.
+
+We are looking to find the sequence of projects you can choose to maximise your final knowledge level. 
+
+\begin{enumerate}
+    \item \label{relaxed_design} First, assume that we can repeat projects as many times as we would like. Design an efficient algorithm to find the sequence of projects that maximises your final knowledge level. Provide time complexity analysis and \emph{brief discussion of correctness}.    
+    \item \label{strict_design} Now, assume projects cannot be repeated. Design an algorithm that runs in $O(n\log n)$ time to find the sequence of projects that maximise your final knowledge level. 
+    \item \label{analysis} Using an exchange argument or otherwise, prove that your algorithm is part \ref{strict_design} correct.
+\end{enumerate}
+
+\note For all parts, the values $s$, $r_i$, and $g_i$ are all positive, and you are guaranteed that there is a sequence of $k$ projects that you can complete.
+\end{question}
+
+\begin{rubric}
+\begin{enumerate}
+    \item For correctness, this part only requires a short paragraph informally explaining why you think your algorithm is correct. The full proof will be seen later in \ref{analysis}.
+    \item What is done in part \ref{strict_design} compared to part \ref{relaxed_design} is called relaxing a constraint. This is a useful problem-solving technique that focuses on developing logic through solving a simpler version of the sample problem. How is this useful here? 
+\end{enumerate}
+
+\expected[3]{half a page. , half a page., half a page.} 
+\end{rubric}
+
+\clearpage
+\begin{solution}
+    % Write your solution here.
+\end{solution}
+\begin{attribution}
+    % Write any attributions here.
+\end{attribution}
+
+\end{document}

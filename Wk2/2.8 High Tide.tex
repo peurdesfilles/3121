@@ -1,0 +1,73 @@
+\documentclass[12pt]{article}
+\newcommand*\dd{\mathop{}\!\mathrm{d}}
+\usepackage{algos-tasks}
+\usepackage{twemojis}
+\usepackage{pgfplots}
+
+\begin{document}
+\task[regular, veryhard]{High Tide}
+
+\begin{question} 
+You are planning a surfing tour to $n$ different beaches. Your tour will start at time $t=0$, and end at time $t=1$. As flights are expensive, you can only visit each beach once, and only one at a time. However, you can visit the beaches in any order, and for any amount of time.
+
+For each of the beaches, you have a chart showing the height of the tide at each point in time. These heights are all continuous functions, and only take non-negative values.
+
+The \textit{tubularity} of a beach $B$ between two times $a$ and $b$, denoted $B(a, b)$, is the area under the tide chart between those times (in other words, the integral of the tide height from $a$ to $b$). The tubularity for each beach between $t=0$ and $t=1$ is exactly 1, i.e. $B(0, 1) = 1$ for all $B$.
+
+To ensure that you experience each beach fully, you would like to ensure that the tubularity while you are at each beach is at least $1/n$. Fortunately, you have a very convenient app that lets you choose a beach, an arrival time and a tubularity amount and tells you how long you would need to stay there to experience that amount of tubularity.
+
+Design an algorithm that determines when to arrive and depart at each beach so that you experience a tubularity of at least $1/n$ at each beach, using \emph{no more than $n^2$ calls to the app}. Assume that you can travel between beaches instantly; that is, you can set the start time for the next beach to be the same as the end time of the current beach.
+
+When proving that your algorithm is correct, it suffices to show that your algorithm will find a solution whenever such a solution exists. This is in contrast to many earlier greedy problems in which you prove that your algorithm gives the \emph{best possible answer}, something you \emph{do not} need to show here.
+
+For example, consider the three tide charts below, showing Manly, Bondi and Coogee beach, respectively. Each tide chart has a total area of 1, so each square represents a tubularity of $1/9$. The red areas show a possible schedule, staying at Bondi from $t=0.1$ to $0.3$, then at Manly from $t=0.3$ to $0.8$, then finally at Coogee from $t=0.825$ to $0.975$. We can confirm that this is a valid schedule: $B(0.1, 0.3) = 4/9$, $M(0.3,0.8) = 4/9$ and $C(0.825, 0.975) = 3/9$, so the tubularity experienced at each location is at least $1/3$.
+\begin{center}
+    \begin{tikzpicture}[scale=0.9][t]
+        \draw[step=1.0,black,thin] (-1,0) grid (9,3);
+        \fill[red, opacity=0.2] (2,0) rectangle (7,3);
+        \path[draw=(black, thick), fill=black, fill=blue!40, fill opacity=0.8] (0,0)--(1,1)--(1.5,2)--(2,1)--(3,0.5)--(4,1)--(5,0)--(6,1)--(7,2)--(7.5,3)--(8,2)--(8.5,0)--cycle;
+        \node at (6.5, 1.5) {\twemoji[height=15pt, angle=15]{surfer}};
+        \draw[Latex-Latex] (2,-0.1) -- (7,-0.1);
+
+        \begin{scope}[shift={(0,-3.5)}]
+            \draw[step=1.0,black,thin] (-1,0) grid (9,3);
+            \fill[red, opacity=0.2] (0,0) rectangle (2,3);
+            \path[draw=(black, thick), fill=black, fill=blue!40, fill opacity=0.8] (-2/3,0) arc[start angle=-90, end angle=0, x radius=1/3, y radius=3/2]--(-1/3,3/2) arc[start angle=180, end angle = 90, x radius=1/3, y radius=3/2]-- (0,3) arc(90:0:1)--(1,2)arc(180:270:1)--(2,1)--(5,1) arc[start angle=90, end angle=0, x radius=1, y radius=0.5]--(6,0.5) arc[start angle=180, end angle=270, x radius=1, y radius=0.5]--(7,0)--cycle;    
+            \draw[Latex-Latex] (0,-0.1) -- (2,-0.1);
+        \end{scope}
+
+        \begin{scope}[shift={(0,-7)}]
+            \draw[step=1.0,black,thin] (-1,0) grid (9,3);
+            \fill[red, opacity=0.2] (7.25,0) rectangle (8.75,3);
+            \path[draw=(black, thick), fill=black, fill=blue!40, fill opacity=0.8] (3, 0) sin ++(3/8,0.4+0.25) cos ++(3/8,-0.4+0.25) sin ++(3/8,-0.4+0.25) cos ++(3/8,0.4+0.25) sin ++(3/8,0.4+0.25) cos ++(3/8,-0.4+0.25) sin ++(3/8,-0.4+0.25) cos ++(3/8,0.4+0.25)
+            -- (6,2) sin ++(3/8,0.4) cos ++(3/8,-0.4) sin ++(3/8,-0.4) cos ++(3/8,0.4) sin ++(3/8,0.4) cos ++(3/8,-0.4) sin ++(3/8,-0.4) cos ++(3/8,0.4) -- (9,0);
+            \node at (1.5, 2.5) {\twemoji[height=15pt]{sun}};
+            \draw[Latex-Latex] (7.25,-0.1) -- (8.75,-0.1);
+        \end{scope}
+    \end{tikzpicture}
+\end{center}
+
+
+\end{question}
+
+\begin{rubric}
+\begin{itemize}
+    \item {\bfseries Correctness}: There are algorithms that correctly solve this problem without being ``optimal", i.e. the algorithm finds an order that reaches a tubularity of 1 even though there is another order that reaches the same tubularity earlier. If you try to prove that such an algorithm is \textbf{optimal} (using Greedy Stays Ahead or Exchange Argument), your proof will have errors, so you need to use a different method to prove its correctness.
+
+    \item {\bfseries Time complexity}: For this problem, we don't require a typical time complexity analysis. Rather the goal is just to argue that the number of calls to the app is at most $n^2$ as an explicit upper bound, not a big-Oh bound.
+
+    \item \textbf{Expected Length:} Around a page and a half.
+
+\end{itemize}
+
+\end{rubric}
+
+\clearpage
+\begin{solution}
+    % Write your solution here.
+\end{solution}
+\begin{attribution}
+    % Write any attributions here.
+\end{attribution}
+
+\end{document}

@@ -1,0 +1,129 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+\usepackage{listings}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{xcolor} % pretty colours
+\usepackage{varwidth}
+\title{2.6 Caffeine}
+\author{Andre Monteiro}
+\date{Term 3, 2025}
+
+\begin{document}
+\maketitle
+\newpage
+\subsection*{Problem Summary}
+
+A cafe offers $n$ drinks, where the $i$-th drink contains $c_i$ milligrams of caffeine per serving. Buzz has $n$ vouchers, each with value $v_i$, which can be used to redeem $v_i$ servings of a single, unique drink (no two vouchers can be used on the same drink).
+
+The goal is to assign each voucher to a different drink in such a way that the \textbf{total caffeine consumed} (i.e., $\sum v_i \cdot c_j$ for some assignment of drinks $j$) is maximized.
+
+
+For example, suppose the drinks (say cappuccino, latte, mocha and espresso) have caffeine contents of $600, 200, 400$, and $100$ milligrams and Buzz's vouchers have values of $6, 3, 8$ and $6$.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+    \hline 
+    \(i\) & 1 & 2 & 3 & 4  \\ \hline 
+    name & cappuccino & latte & mocha & espresso \\ \hline
+    \(c_i\) & 600 & 200 & 400 & 100 \\ \hline
+    \(v_i\) & 6 & 3 & 8 & 6 \\ \hline
+\end{tabular}
+\end{center}
+One possibility is to use voucher 1 for six mochas, voucher 2 for three cappuccinos, voucher 3 for eight espressos and voucher 4 for six lattes. The total caffeine content would be 
+\begin{align*}
+    v_1c_3 + v_2c_1 + v_3c_2 + v_4c_4 &= (6\times400)+(3\times600)+(8\times200)+(6\times100) \\
+    &= 6400\ \text{milligrams}.
+\end{align*}
+    Note that this is \textit{not} the optimal allocation!
+\newpage 
+
+\subsection*{Question A)} 
+
+We are given the task of proving that 
+\begin{itemize}
+    \item We should sort the drinks in ascending order 
+    \item We should sort the vouchers in ascending order 
+\end{itemize}    
+Intuitively this makes sense, but to prove it we need to show that our ordering $G$ is as good or better than any alternative ordering $A$.
+
+Firstly we define the cost function, and as we want to sort by 
+\begin{enumerate}
+    \item Drinks with \textit{highest} caffeine contents 
+    \item Vouchers with \textit{highest} highest redemptions 
+\end{enumerate}
+
+If the drinks are ordered $c_1, c_2, \ldots, c_3$, and drink vouchers $v_1, v_2, \ldots, v_3$, then the expected cost function is: 
+
+\[
+E = c_1 v_1 + c_2 v_2 + c_3 v_3 + \cdots + c_j v_i
+\]
+
+\subsection*{Claim}
+The maximized value is achieved when both drinks and vouchers are sorted in ascending order, e.g. lowest cost drink to lowest voucher value
+
+\[
+C \in c_1 \le c_2 \le c_3 \le \cdots \le c_j
+\]
+\[
+V \in v_1 \le v_2 \le v_3 \le \cdots \le v_i
+\]
+
+\subsection*{Proof by Contradiction}
+
+Suppose there exists ordering $A$, wherein $C$ nor $V$ is in ascending order, and our pairing $G$ where it is. 
+
+We assume $A$ to be maximised, that is, to have the highest possible net value. For the sake of contradiction, there is pairing: 
+
+\[
+c_i > c_{i+1}, \quad v_i < v_{i+1}
+\]
+In this scenario, we have total value:
+
+\[
+T = c_i v_i + c_{i+1} v_{i+1}
+\]
+
+If we were to switch the pairing, our resultant sum is:
+
+\[
+T' = c_i v_{i+1} + c_{i+1} v_i
+\]
+
+Now,
+\[
+T - T' = c_i v_i + c_{i+1} v_{i+1} - (c_i v_{i+1} + c_{i+1} v_i)
+\]
+
+\[
+= (c_i - c_{i+1}) v_i + (c_{i+1} - c_i) v_{i+1}
+\]
+
+\[
+= (c_i - c_{i+1})(v_i - v_{i+1})
+\]
+
+Since $c_i > c_{i+1}$ and $v_i < v_{i+1}$, this product is negative:
+
+This means that any pairing that is not ordered identically, 
+\[
+T - T' \le 0 
+\]
+
+\[
+\boxed{T \le T'} 
+\]
+
+Therefore implying a contradiction, as T isn't the maximized sum.  
+
+\subsection*{Question b)}
+
+By the above argument, any inversion in the order (i.e., pairing a higher caffeine drink with a lower-value voucher or vice versa) can be swapped to increase the total caffeine.
+
+Therefore, if we continue eliminating all such inversions, we will eventually arrive at a configuration where no such beneficial swap exists, which is precisely when both sequences are sorted in the same order.
+
+Hence, the greedy matching $G$, where both vouchers and drinks are sorted in ascending order, yields the maximum total caffeine and is thus:
+
+\[
+\boxed{\text{Optimal}}
+\]
+\end{document}

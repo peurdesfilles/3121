@@ -1,0 +1,169 @@
+\documentclass[12pt]{article}
+\usepackage{algos-tasks}
+\usepackage{listings}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{xcolor} % pretty colours
+\usepackage{varwidth}
+\title{2.3 Art Gallery}
+\author{Andre Monteiro}
+\date{Term 3, 2025}
+
+\begin{document}
+\maketitle
+\newpage
+\subsection*{Problem Summary}
+You are given $n$ chores to do over the next $n$ days.  
+Each chore takes 1 day, and only one chore can be done per day.  
+
+You get paid $p_i > 0$ cents for chore $i$ if you finish it on or before its due date $t_i \geq 1$.  
+You get nothing if you do it after the due date.
+
+Example:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Chore $i$ & X & Y & Z \\
+\hline
+$p_i$ & 20 & 50 & 30 \\
+$t_i$ & 2 & 2 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+The best way to schedule the chores is to do Z on day 1 and Y on day 2, for a total of 80 cents.  
+
+Assume a greedy algorithm is used to find the schedule that gives the highest total profit.
+
+\newpage
+\subsection*{Question a)}
+A greedy heuristic is one that: 
+
+\begin{enumerate}
+    \item Makes a locally optimized choice
+    \item Does not look ahead or explore alternatives 
+    \item Assumes this will lead to a globally optimized solution
+\end{enumerate}
+
+As such, the heuristic used in this problem is first sorting the array by highest cost, and then placing each item at the latest possible date for it's execution. This creates a locally optimized result in choosing the highest cost at each iteration.
+Alongside choosing the highest cost, we also schedule it at the latest possible time, ensuring that it's not possible to further optimize this result. \\
+
+\subsection*{Proof of validity}
+
+Suppose a schedule is not optimal, meaning it does not produce the maximum possible profit. Then there must exist at least one step where the algorithm scheduled a less profitable chore, even though a more profitable one was still available and could have been placed within its deadline.
+This contradicts the greedy heuristic rule, which always selects the highest-paying available chore and schedules it at the latest possible day before its deadline.
+Therefore, if no such mistake is made, the greedy algorithm must have produced the optimal result.
+
+
+
+
+\newpage
+\subsection*{Example}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Chore $i$ & A & B & C & D \\
+\hline
+$p_i$ (profit) & 20 & 10 & 70 & 60 \\
+$t_i$ (deadline) & 1 & 3 & 1 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Sorted Chores by Profit (Descending)}
+
+The greedy algorithm begins by sorting the chores in descending order of profit:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Chore $i$ & C & D & A & B \\
+\hline
+$p_i$ & 70 & 60 & 20 & 10 \\
+$t_i$ & 1 & 2 & 1 & 3 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+We maintain a schedule of days 1 to 4. For each chore in the sorted list, we place it on the latest available day $\leq t_i$.
+
+\subsubsection*{Insert Chore C}
+
+\[
+i = \text{C}, \quad p_i = 70, \quad t_i = 1
+\]
+
+Latest available day $\leq 1$ is day 1.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Day & 1 & 2 & 3 & 4 \\
+\hline
+Chore & C (70) & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Insert Chore D}
+
+\[
+i = \text{D}, \quad p_i = 60, \quad t_i = 2
+\]
+
+Latest available day $\leq 2$ is day 2.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Day & 1 & 2 & 3 & 4 \\
+\hline
+Chore & C (70) & D (60) & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Insert Chore A}
+
+\[
+i = \text{A}, \quad p_i = 20, \quad t_i = 1
+\]
+
+Day 1 is already taken. No available day $\leq 1$.
+
+\textbf{Chore A is skipped.}
+
+\subsubsection*{Insert Chore B}
+
+\[
+i = \text{B}, \quad p_i = 10, \quad t_i = 3
+\]
+
+Latest available day $\leq 3$ is day 3.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Day & 1 & 2 & 3 & 4 \\
+\hline
+Chore & C (70) & D (60) & B (10) & . \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Final Schedule and Total Profit}
+
+\begin{itemize}
+    \item Day 1: Chore C (70 cents)
+    \item Day 2: Chore D (60 cents)
+    \item Day 3: Chore B (10 cents)
+    \item Day 4: Unused
+\end{itemize}
+
+\[
+\text{Total Profit} = 70 + 60 + 10 = \boxed{140 \text{ cents}}
+\]
+\end{document}
